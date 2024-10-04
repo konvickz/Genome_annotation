@@ -12,13 +12,13 @@ Jeden transkriptom byl stažen z NCBI databáze jako SRA, musí převeden na fas
 Vytvořit skript:
   nano convert.pbs
 
-  #!/bin/bash
-  #PBS -l select=1:ncpus=1:mem=12gb:scratch_local=12gb
-  #PBS -l walltime=01:00:00
-  cd /storage/praha1/home/eliasok1/fishevo/data_source/barbus/transcriptome_genbank/ 
-  module add conda-modules-py37
-  conda activate sra-tools-3.0.3
-  fastq-dump --split-3 ERR10123689.sra > barbus_spleen.fastq
+#!/bin/bash
+#PBS -l select=1:ncpus=1:mem=12gb:scratch_local=12gb
+#PBS -l walltime=01:00:00
+cd /storage/praha1/home/eliasok1/fishevo/data_source/barbus/transcriptome_genbank/ 
+module add conda-modules-py37
+conda activate sra-tools-3.0.3
+fastq-dump --split-3 ERR10123689.sra > barbus_spleen.fastq
 
 Následně zazipovat:
   gzip barbus_spleen.fastq
