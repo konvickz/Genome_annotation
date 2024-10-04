@@ -3,8 +3,12 @@ Genome annotation done with Demi (my script and notes, we were annotation Barbus
 
 Anotace genomu
 
-Raw file directory: /storage/praha1/home/eliasok1/fishevo/data_source/barbus
-Working directory: /storage/brno12-cerit/home/konvickz/barbus/genome_annotation
+Raw file directory:
+
+    /storage/praha1/home/eliasok1/fishevo/data_source/barbus
+
+Working directory:
+    /storage/brno12-cerit/home/konvickz/barbus/genome_annotation
 
 Konverze složky SRA na fastq:
 
