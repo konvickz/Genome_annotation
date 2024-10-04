@@ -22,7 +22,7 @@ fastq-dump --split-3 ERR10123689.sra > barbus_spleen.fastq
 
 Následně zazipovat:
 
-  gzip barbus_spleen.fastq
+gzip barbus_spleen.fastq
 
 Skript nakonec vytvořil složku barbus_spleen.fastq (tuto nepotřebujeme, obsahuje asi nějaký report), a dvě složky ERR10123689_1.fastq, ERR10123689_2.fastq, které obsahují naše forward a reverse reads.
 
