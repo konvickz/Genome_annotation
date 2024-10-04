@@ -10,7 +10,8 @@ Konverze složky SRA na fastq:
 
 Jeden transkriptom byl stažen z NCBI databáze jako SRA, musí převeden na fastq a zazipován.
 Vytvořit skript:
-     nano convert.pbs
+
+    nano convert.pbs
 
 #!/bin/bash
 #PBS -l select=1:ncpus=1:mem=12gb:scratch_local=12gb
