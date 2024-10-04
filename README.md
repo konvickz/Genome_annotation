@@ -8,6 +8,7 @@ Raw file directory:
     /storage/praha1/home/eliasok1/fishevo/data_source/barbus
 
 Working directory:
+
     /storage/brno12-cerit/home/konvickz/barbus/genome_annotation
 
 Konverze složky SRA na fastq:
