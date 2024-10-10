@@ -19,6 +19,7 @@ Vytvořit skript:
     nano convert.pbs
 
     #!/bin/bash
+    #PBS -N convert.pbs
     #PBS -l select=1:ncpus=1:mem=12gb:scratch_local=12gb
     #PBS -l walltime=01:00:00
     cd /storage/praha1/home/eliasok1/fishevo/data_source/barbus/transcriptome_genbank/ 
