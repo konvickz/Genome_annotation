@@ -1,7 +1,5 @@
 # Genome_annotation
-Genome annotation done with Demi (my script and notes, we were annotation Barbus barbus genome)
-
-Anotace genomu
+Genome annotation done with Demi (my script and notes, we were annotating Barbus barbus genome)
 
 Raw file directory:
 
@@ -11,7 +9,7 @@ Working directory:
 
     /storage/brno12-cerit/home/konvickz/barbus/genome_annotation
 
-Konverze složky SRA na fastq:
+# SRA to fastq conversion:
 
 Jeden transkriptom byl stažen z NCBI databáze jako SRA, musí převeden na fastq a zazipován.
 Vytvořit skript:
@@ -33,117 +31,70 @@ Následně zazipovat:
 
 Skript nakonec vytvořil složku barbus_spleen.fastq (tuto nepotřebujeme, obsahuje asi nějaký report), a dvě složky ERR10123689_1.fastq, ERR10123689_2.fastq, které obsahují naše forward a reverse reads.
 
-Filtering and cleaning the reads before mapping
+# Filtering and cleaning the reads before mapping:
 
 https://github.com/OpenGene/fastp
+
 https://wiki.metacentrum.cz/wiki/Fastp
 
+My attempts to process all samples at once using "for loop" failed :(
 
-#!/bin/bash
-#PBS -l select=1:ncpus=6:mem=12gb:scratch_local=12gb
-#PBS -l walltime=04:00:00
-cd /storage/praha1/home/eliasok1/fishevo/data_source/barbus/RNA_raw_data/
-module add conda-modules-py37
-conda activate fastp
-output_dir=/storage/brno12-cerit/home/konvickz/barbus/genome_annotation/fastp_files
-for forward_read in *_1.fq.gz; do
-    base=$(basename "$forward_read" _1.fq.gz)
-    reverse_read="${base}_2.fq.gz"
-    output_forward="$output_dir/${base}_fastp_1.fq.gz"
-    output_reverse="$output_dir/${base}_fastp_2.fq.gz"
-        fastp -i "$forward_read" -I "$reverse_read" \
-          -o "$output_forward" -O "$output_reverse" -l 50 --threads 6\
-          --html "$output_dir/${base}_fastp.html" --json "$output_dir/${base}_fastp.json"
-          
-    echo "Processed $base"
-done
-
-cd /storage/praha1/home/eliasok1/fishevo/data_source/barbus/RNA_raw_data/
-
-output_dir=/storage/brno12-cerit/home/konvickz/barbus/genome_annotation/fastp_files
-for forward_read in *_1.fq.gz; do
-    base=$(basename "$forward_read" _1.fq.gz)
-    reverse_read="${base}_2.fq.gz"
-    output_forward="$output_dir/${base}_fastp_1.fq.gz"
-    output_reverse="$output_dir/${base}_fastp_2.fq.gz"
-    echo "Output Forward File: $output_forward"
-    echo "Output Reverse File: $output_reverse"
-done
-
-Test for my loop with file names:
-fastp -i /path/to/test_1.fq.gz -I /path/to/test_2.fq.gz \
-      -o /path/to/output/test_fastp_1.fq.gz -O /path/to/output/test_fastp_2.fq.gz
 Script from Demi to process one sample first:
 
-/storage/brno1-cerit/home/dburghez/BAROMBI/WGS/bin/fastp --in1 $path/RAW/$indiv.R1.fastq.gz --in2 $path/RAW/$indiv.R2.fastq.gz --ou
-t1 $path/FILTERED/$indiv.R1.trimmed.fastq.gz --out2 $path/FILTERED/$indiv.R2.trimmed.fastq.gz --unpaired1 $path/FILTERED/$indiv.R1.
-unpaired.fastq.gz --unpaired2 $path/FILTERED/$indiv.R2.unpaired.fastq.gz -l 50 --thread 6 -h $path/HTML/$indiv.html &> $path/HTML/$
-indiv.log\n\n"
+	/storage/brno1-cerit/home/dburghez/BAROMBI/WGS/bin/fastp \
+	--in1 $path/RAW/$indiv.R1.fastq.gz \
+	--in2 $path/RAW/$indiv.R2.fastq.gz \
+	--out1 $path/FILTERED/$indiv.R1.trimmed.fastq.gz \
+	--out2 $path/FILTERED/$indiv.R2.trimmed.fastq.gz \
+	--unpaired1 $path/FILTERED/$indiv.R1.unpaired.fastq.gz \
+	--unpaired2 $path/FILTERED/$indiv.R2.unpaired.fastq.gz \
+	-l 50 \
+	--thread 6 \
+	-h $path/HTML/$indiv.html &> $path/HTML/$indiv.log\n\n"
 
+My script:
 
-#!/bin/bash
-#PBS -l select=1:ncpus=6:mem=12gb:scratch_local=12gb
-#PBS -l walltime=04:00:00
-cd /storage/praha1/home/eliasok1/fishevo/data_source/barbus/RNA_raw_data/
-module add conda-modules-py37
-conda activate fastp
-fastp \
-  --in1 Barb_104B7_1.fq.gz \
-  --in2 Barb_104B7_2.fq.gz \
-  --out1 /storage/brno12-cerit/home/konvickz/barbus/genome_annotation/fastp_files/Barb_104B7_fastp_1.fq.gz \
-  --out2 /storage/brno12-cerit/home/konvickz/barbus/genome_annotation/fastp_files/Barb_104B7_fastp_2.fq.gz \
-  -l 50 \
-  --thread 6 \
-  -h /storage/brno12-cerit/home/konvickz/barbus/genome_annotation/fastp_files/HTML/Barb_104B7.html
+	#!/bin/bash
+	#PBS -N fastp_104B7.pbs
+	#PBS -l select=1:ncpus=6:mem=12gb:scratch_local=12gb
+	#PBS -l walltime=04:00:00
+	
+	cd /storage/praha1/home/eliasok1/fishevo/data_source/barbus/RNA_raw_data/module add conda-modules-py37
+	
+	conda activate fastp
+	
+	fastp \
+	  --in1 Barb_104B7_1.fq.gz \
+	  --in2 Barb_104B7_2.fq.gz \
+	  --out1 /storage/brno12-cerit/home/konvickz/barbus/genome_annotation/fastp_files/Barb_104B7_fastp_1.fq.gz \
+	  --out2 /storage/brno12-cerit/home/konvickz/barbus/genome_annotation/fastp_files/Barb_104B7_fastp_2.fq.gz \
+	  -l 50 \
+	  --thread 6 \
+	  -h /storage/brno12-cerit/home/konvickz/barbus/genome_annotation/fastp_files/HTML/Barb_104B7.html
 
+This script was applied to all RNA samples separately (one by one).
 
+Adapting script with sed command:
 
-#!/bin/bash
-#PBS -l select=1:ncpus=1:mem=12gb:scratch_local=12gb
-#PBS -l walltime=01:00:00
+	sed 's/104B7/roz1/g' fastp_104B7.pbs > fastp_roz1.pbs
+	#replaces 104B7 in "fastp_104B7.pbs" file with roz1 and saves the result in the new file called fastp_roz1.pbs
 
-cd /storage/praha1/home/eliasok1/fishevo/data_source/barbus/transcriptome_genbank/ module add conda-modules-py37
-conda activate fastp
-fastp -i in.*1.fq.gz -I in.*2.fq.gz \
--l 50 –-threads 6 
--o /storage/brno12-cerit/home/konvickz/barbus/genome_annotation/fastp_files/out.*1.fq.gz \
--O /storage/brno12-cerit/home/konvickz/barbus/genome_annotation/fastp_files/out.*2.fq.gz
+# Downloading HTML files after fastp:
 
+Option 1: go to the directory in my PC where I want HTML files and run the following command
 
-#!/bin/bash
+	scp -r konvickz@skirit.ics.muni.cz:/storage/brno12-cerit/home/konvickz/barbus/genome_annotation/fastp_files/HTML .
 
-# Input directory containing raw fastq files
-input_dir="/path/to/input_files"
-# Output directory to store processed files
-output_dir="/path/to/output_files"
-for forward_read in "$input_dir"/*_1.fq.gz; do
-    base=$(basename "$forward_read" _1.fq.gz)
-    reverse_read="$input_dir/${base}_2.fq.gz"
-    output_forward="$output_dir/${base}_fastp_1.fq.gz"
-    output_reverse="$output_dir/${base}_fastp_2.fq.gz"
-        fastp -i "$forward_read" -I "$reverse_read" \
-          -o "$output_forward" -O "$output_reverse" \
-          --html "$output_dir/${base}_fastp.html" --json "$output_dir/${base}_fastp.json"
-          
-    echo "Processed $base"
-done
+Option 2: go to the directory in my PC where I want HTML files and log into Metacentrum using stfp
 
-for f in in.*1.fq.gz; do
-  r=${f%1.fq.gz}2.fq.gz  # This gets the corresponding reverse read file
-  base=$(basename "$f" 1.fq.gz)  # Extract the base name
-  fastp -i "$f" -I "$r" \
-        -o /storage/brno12-cerit/home/konvickz/barbus/genome_annotation/fastp_files/out."$base"1.fq.gz \
-        -O /storage/brno12-cerit/home/konvickz/barbus/genome_annotation/fastp_files/out."$base"2.fq.gz
-done
+	sftp konvickz@skirit.ics.muni.cz
 
-Downloading HTML files after fastp:
-scp -r konvickz@skirit.ics.muni.cz:/storage/brno12-cerit/home/konvickz/ barbus/genome_annotation/fastp_files/HTML .
+Then find files or directories I want to download and use command get
 
+	cd /storage/brno12-cerit/home/konvickz/barbus/genome_annotation/fastp_files
+	get HTML
 
-Adaptovat původní skript pro první vzorek pro všechny vzorky (vytvoří samostatné skripty)
-sed 's/104B7/14d10/g' fastp_1sample > fastp_14d10.pbs
-
-Genome indexing (with HISAT2)
+# Genome indexing (with HISAT2)
 
 module load hisat2/2
 
